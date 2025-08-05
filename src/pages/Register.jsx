@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Toaster, toast } from "sonner";
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -16,7 +17,7 @@ function Register() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Password dan konfirmasi tidak cocok!");
+      toast.error("Password dan konfirmasi tidak cocok!");
       return;
     }
 
@@ -35,16 +36,19 @@ function Register() {
         throw new Error(data.message || 'Register failed');
       }
 
-      alert("Register berhasil!");
-      navigate("/login");
+      toast.success("Register berhasil!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (error) {
       console.error("Register error:", error);
-      alert(`Register gagal: ${error.message}`);
+      toast.error(`Register gagal: ${error.message}`);
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-20 p-8 border border-gray-300 rounded-xl shadow-md bg-white">
+      <Toaster richColors />
       <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Register</h2>
       <form onSubmit={handleSubmit}>
         {/* Name */}

@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Toaster, toast } from "sonner";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -26,19 +27,22 @@ function Login() {
       
       if (data.data && data.data.token) {
         localStorage.setItem('token', data.data.token);
-        alert("Login berhasil!");
-        navigate("/products");
+        toast.success("Login berhasil!");
+        setTimeout(() => {
+          navigate("/products");
+        }, 2000);
       } else {
         throw new Error(data.message || 'Token not found in response');
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert(`Login gagal: ${error.message}`);
+      toast.error(`Login gagal: ${error.message}`);
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-20 p-8 border border-gray-300 rounded-xl shadow-md bg-white">
+      <Toaster richColors />
       <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
