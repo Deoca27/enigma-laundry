@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import EditModal from "./EditModal";
+import Swal from "sweetalert2";
+import { Toaster, toast } from "sonner";
 
 function CustomerPage() {
   const [customers, setCustomers] = useState([]);
@@ -39,28 +41,37 @@ function CustomerPage() {
 
   const handleDelete = async (id) => {
     const token = localStorage.getItem('token');
-    if (!confirm("Apakah Anda yakin ingin menghapus pelanggan ini?")) {
-      return;
-    }
+    
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Anda tidak akan dapat mengembalikan ini!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`/api/v1/customers/${id}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
 
-    try {
-      const response = await fetch(`/api/v1/customers/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+          if (!response.ok) {
+            throw new Error('Failed to delete customer');
+          }
 
-      if (!response.ok) {
-        throw new Error('Failed to delete customer');
+          setCustomers(customers.filter((c) => c.id !== id));
+          toast.success("Pelanggan berhasil dihapus!");
+        } catch (error) {
+          console.error("Delete error:", error);
+          toast.error("Gagal menghapus pelanggan.");
+        }
       }
-
-      setCustomers(customers.filter((c) => c.id !== id));
-      alert("Pelanggan berhasil dihapus!");
-    } catch (error) {
-      console.error("Delete error:", error);
-      alert("Gagal menghapus pelanggan.");
-    }
+    });
   };
 
   const handleUpdate = (updated) => {
@@ -70,6 +81,7 @@ function CustomerPage() {
 
   return (
     <div className="relative max-w-5xl mx-auto mt-12 p-6 bg-white shadow-md rounded-lg">
+      <Toaster richColors />
       <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Manajemen Pelanggan</h2>
 
       <div className="flex justify-end mb-4">

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import EditModal from "./EditModal";
+import Swal from "sweetalert2";
+import { Toaster, toast } from "sonner";
 
 function ProductPage() {
   const [products, setProducts] = useState([]);
@@ -40,28 +42,37 @@ function ProductPage() {
 
   const handleDelete = async (id) => {
     const token = localStorage.getItem('token');
-    if (!confirm("Apakah Anda yakin ingin menghapus produk ini?")) {
-      return;
-    }
+    
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Anda tidak akan dapat mengembalikan ini!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`/api/v1/products/${id}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
 
-    try {
-      const response = await fetch(`/api/v1/products/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+          if (!response.ok) {
+            throw new Error('Failed to delete product');
+          }
 
-      if (!response.ok) {
-        throw new Error('Failed to delete product');
+          setProducts(products.filter((p) => p.id !== id));
+          toast.success("Produk berhasil dihapus!");
+        } catch (error) {
+          console.error("Delete error:", error);
+          toast.error("Gagal menghapus produk.");
+        }
       }
-
-      setProducts(products.filter((p) => p.id !== id));
-      alert("Produk berhasil dihapus!");
-    } catch (error) {
-      console.error("Delete error:", error);
-      alert("Gagal menghapus produk.");
-    }
+    });
   };
 
   const handleUpdate = (updatedProduct) => {
@@ -73,6 +84,7 @@ function ProductPage() {
 
   return (
     <div className="relative max-w-2xl mx-auto mt-12 p-6 bg-white shadow-md rounded-lg">
+      <Toaster richColors />
       <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Manajemen Produk</h2>
 
       <div className="flex justify-end mb-6">
