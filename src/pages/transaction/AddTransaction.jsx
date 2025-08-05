@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Toaster, toast } from "sonner";
 
 function AddTransaction() {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ function AddTransaction() {
 
       } catch (error) {
         console.error("Fetch data error:", error);
-        alert(error.message);
+        toast.error(error.message);
         navigate('/login');
       }
     };
@@ -83,17 +84,17 @@ function AddTransaction() {
 
     // Client-side validation
     if (!customerId) {
-        alert("Pelanggan harus dipilih.");
+        toast.error("Pelanggan harus dipilih.");
         return;
     }
 
     for (const item of items) {
         if (!item.productId) {
-            alert("Semua produk harus dipilih.");
+            toast.error("Semua produk harus dipilih.");
             return;
         }
         if (item.qty <= 0) {
-            alert("Kuantitas produk harus lebih dari 0.");
+            toast.error("Kuantitas produk harus lebih dari 0.");
             return;
         }
     }
@@ -122,18 +123,21 @@ function AddTransaction() {
             throw new Error(data.message || 'Gagal membuat transaksi')
         }
 
-        alert("Transaksi berhasil dibuat!");
-        navigate("/transactions");
+        toast.success("Transaksi berhasil dibuat!");
+        setTimeout(() => {
+          navigate("/transactions");
+        }, 2000);
 
     } catch(error) {
         console.error("Transaction error:", error);
-        alert(`Gagal: ${error.message}`);
+        toast.error(`Gagal: ${error.message}`);
     }
 
   };
 
   return (
     <div className="max-w-2xl mx-auto mt-16 p-6 bg-white rounded-lg shadow">
+      <Toaster richColors />
       <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
         Buat Transaksi
       </h2>

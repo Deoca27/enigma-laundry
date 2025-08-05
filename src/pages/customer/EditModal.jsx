@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Toaster, toast } from "sonner";
 
 function EditModal({ customer, onClose, onSave }) {
   const [form, setForm] = useState({ ...customer, phoneNumber: customer.phoneNumber || "", address: customer.address || "", name: customer.name || "" });
@@ -28,16 +29,17 @@ function EditModal({ customer, onClose, onSave }) {
       }
 
       onSave(data.data);
-      alert("Pelanggan berhasil diperbarui!");
+      toast.success("Pelanggan berhasil diperbarui!");
 
     } catch (error) {
       console.error("Update error:", error);
-      alert(`Gagal memperbarui pelanggan: ${error.message}`);
+      toast.error(`Gagal memperbarui pelanggan: ${error.message}`);
     }
   };
 
   return (
     <div className="absolute top-20 left-1/2 -translate-x-1/2 z-30 bg-white border border-gray-300 shadow-lg rounded-lg p-6 w-80">
+      <Toaster richColors />
       <h3 className="text-lg font-semibold mb-4 text-center">Edit Pelanggan</h3>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">

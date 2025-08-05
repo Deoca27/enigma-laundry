@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Toaster, toast } from "sonner";
 
 function AddProduct() {
   const navigate = useNavigate();
@@ -29,17 +30,20 @@ function AddProduct() {
         throw new Error(data.message || 'Gagal menambahkan produk');
       }
 
-      alert("Produk berhasil ditambahkan!");
-      navigate("/products");
+      toast.success("Produk berhasil ditambahkan!");
+      setTimeout(() => {
+        navigate("/products");
+      }, 2000);
 
     } catch (error) {
       console.error("Add product error:", error);
-      alert(`Gagal menambahkan produk: ${error.message}`);
+      toast.error(`Gagal menambahkan produk: ${error.message}`);
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-16 p-6 bg-white shadow-md rounded-lg">
+      <Toaster richColors />
       <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Tambah Produk</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
