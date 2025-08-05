@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import TransactionDetailModal from "./TransactionDetailModal";
+import { Toaster, toast } from "sonner";
 
 function TransactionPage() {
   const [transactions, setTransactions] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    if (location.state && location.state.message) {
+      toast.success(location.state.message);
+    }
+
     const fetchTransactions = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -32,13 +38,13 @@ function TransactionPage() {
 
       } catch (error) {
         console.error("Fetch error:", error);
-        alert(`Gagal memuat transaksi: ${error.message}`);
+        toast.error(`Gagal memuat transaksi: ${error.message}`);
         navigate('/login');
       }
     };
 
     fetchTransactions();
-  }, [navigate]);
+  }, [navigate, location.state]);
 
   const getTotal = (items) => {
     if (!items || !Array.isArray(items)) {
@@ -50,6 +56,7 @@ function TransactionPage() {
 
   return (
     <div className="relative max-w-5xl mx-auto mt-12 p-6 bg-white shadow-md rounded-lg">
+      <Toaster richColors />
       <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Manajemen Transaksi</h2>
 
       <div className="flex justify-end mb-4">

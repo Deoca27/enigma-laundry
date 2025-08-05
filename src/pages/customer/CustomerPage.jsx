@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import EditModal from "./EditModal";
 import Swal from "sweetalert2";
 import { Toaster, toast } from "sonner";
@@ -8,8 +8,13 @@ function CustomerPage() {
   const [customers, setCustomers] = useState([]);
   const [editingCustomer, setEditingCustomer] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    if (location.state && location.state.message) {
+      toast.success(location.state.message);
+    }
+
     const fetchCustomers = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -37,7 +42,7 @@ function CustomerPage() {
     };
 
     fetchCustomers();
-  }, [navigate]);
+  }, [navigate, location.state]);
 
   const handleDelete = async (id) => {
     const token = localStorage.getItem('token');

@@ -30,10 +30,7 @@ function AddProduct() {
         throw new Error(data.message || 'Gagal menambahkan produk');
       }
 
-      toast.success("Produk berhasil ditambahkan!");
-      setTimeout(() => {
-        navigate("/products");
-      }, 2000);
+      navigate("/products", { state: { message: "Produk berhasil ditambahkan!" } });
 
     } catch (error) {
       console.error("Add product error:", error);

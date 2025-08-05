@@ -36,10 +36,7 @@ function Register() {
         throw new Error(data.message || 'Register failed');
       }
 
-      toast.success("Register berhasil!");
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
+      navigate("/login", { state: { message: "Register berhasil!" } });
     } catch (error) {
       console.error("Register error:", error);
       toast.error(`Register gagal: ${error.message}`);

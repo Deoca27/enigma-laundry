@@ -1,5 +1,4 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Toaster, toast } from "sonner";
 
 function Header() {
   const navigate = useNavigate();
@@ -7,10 +6,7 @@ function Header() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    toast.success("Berhasil logout!");
-    setTimeout(() => {
-      navigate("/login");
-    }, 2000);
+    navigate("/login", { state: { message: "Berhasil logout!" } });
   };
 
   // Sembunyikan header di halaman login dan register
@@ -18,7 +14,6 @@ function Header() {
 
   return (
     <header className="bg-gray-800 text-white py-4 px-6 shadow-md mb-6">
-      <Toaster richColors />
       <div className="container mx-auto flex justify-between items-center">
         <nav className="flex gap-6 text-lg font-medium">
           <Link

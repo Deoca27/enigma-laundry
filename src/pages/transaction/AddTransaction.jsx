@@ -123,10 +123,7 @@ function AddTransaction() {
             throw new Error(data.message || 'Gagal membuat transaksi')
         }
 
-        toast.success("Transaksi berhasil dibuat!");
-        setTimeout(() => {
-          navigate("/transactions");
-        }, 2000);
+        navigate("/transactions", { state: { message: "Transaksi berhasil dibuat!" } });
 
     } catch(error) {
         console.error("Transaction error:", error);

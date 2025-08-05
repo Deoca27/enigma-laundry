@@ -30,10 +30,7 @@ function AddCustomer() {
         throw new Error(data.message || 'Gagal menambahkan pelanggan');
       }
 
-      toast.success("Pelanggan berhasil ditambahkan!");
-      setTimeout(() => {
-        navigate("/customers");
-      }, 2000);
+      navigate("/customers", { state: { message: "Pelanggan berhasil ditambahkan!" } });
 
     } catch (error) {
       console.error("Add customer error:", error);

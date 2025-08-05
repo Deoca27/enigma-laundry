@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Toaster, toast } from "sonner";
 
 function Login() {
@@ -7,6 +7,13 @@ function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state && location.state.message) {
+      toast.success(location.state.message);
+    }
+  }, [location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,10 +34,7 @@ function Login() {
       
       if (data.data && data.data.token) {
         localStorage.setItem('token', data.data.token);
-        toast.success("Login berhasil!");
-        setTimeout(() => {
-          navigate("/products");
-        }, 2000);
+        navigate("/products", { state: { message: "Login berhasil!" } });
       } else {
         throw new Error(data.message || 'Token not found in response');
       }
